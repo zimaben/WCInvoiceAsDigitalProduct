@@ -1,4 +1,6 @@
 <?php
+namespace rbtinv\admin;
+
 require_once __DIR__  . '/dompdf/autoload.inc.php';
 $path = preg_replace( '/wp-content.*$/', '', __DIR__ );
 require_once $path . 'wp-load.php';
@@ -9,20 +11,21 @@ use Dompdf\Options as Options;
 Class Invoice {
     public $invoice_id;
     public $booking_id;
-    public $client_name;
+    public $guest_name;
     public $payment_method;
     public $services;
     public $total;
 
-    public function __construct( $file = 'file-invoice.php', Array $arguments = null ) {
+    public function __construct( array $arguments = array(), $file = 'file-invoice.php' ) {
         $this->file = $this->checkFile($file);
         $this->invoice_id = isset($arguments['invoice_id']) ? $arguments['invoice_id'] : 1;
-        $this->booking_id = isset($arguments['booking_id']) ? $arguments['booking_id'] : 1;
-        $this->client_name = isset($arguments['client_name']) ? $arguments['client_name'] : false;
-        $this->client_email = isset($arguments['client_email']) ? $arguments['client_email'] : false;
-        $this->client_phone = isset($arguments['client_phone']) ? $arguments['client_phone'] : false;
+        $this->booking_id = isset($arguments['booking_id']) ? $arguments['booking_id'] : 0;
+        $this->guest_name = isset($arguments['guest_name']) ? $arguments['guest_name'] : false;
+        $this->guest_email = isset($arguments['guest_email']) ? $arguments['guest_email'] : false;
+        $this->guest_phone = isset($arguments['guest_phone']) ? $arguments['guest_phone'] : false;
         $this->payment_method = isset($arguments['payment_method']) ? $arguments['payment_method'] : 'Cash';
         $this->pickupdate = isset($arguments['pickupdate']) ? $arguments['pickupdate'] : false;
+        $this->filename = isset($arguments['filename']) ? $arguments['filename'] : $this->generateFileName();
         $this->services = isset($arguments['services']) ? $arguments['services'] : false;
         $this->total = $this->services ? $this->getTotal($this->services) : false;
         $this->ready = $this->file ? $this->checkArgs() : false;
@@ -34,9 +37,9 @@ Class Invoice {
         $already = array(
             'invoice_id',
             'booking_id',
-            'client_name',
-            'client_email',
-            'client_phone',
+            'guest_name',
+            'guest_email',
+            'guest_phone',
             'payment_method',
             'pickupdate',
             'services',
@@ -44,11 +47,15 @@ Class Invoice {
             'ready',
             'htmlString',
             'pdf',
-            'file'
+            'filename'
         );
         foreach($args as $key => $value){
             if( !in_array($key, $already) ) $this->$key = $value;
         }
+    }
+    private function generateFileName(){
+        $filename = date( 'Y-m-d') . '_' . $this->guest_email . '.pdf';
+        return $filename;
     }
     public function generatePDF(){
         if( $this->htmlString ){ 
@@ -67,14 +74,14 @@ Class Invoice {
         # $dompdf->stream();
         #$pdf->stream("invoice.pdf", array("Attachment" => true));
         $output = $dompdf->output();
-        \file_put_contents( __DIR__ . '/invoices/' . date( 'Y-m-d') . '_' . $this->client_email . '.pdf', $output);
+        \file_put_contents( __DIR__ . '/invoices/' . $this->filename, $output);
         return true;
     }
     private function checkArgs(){
         if( 
             $this->invoice_id && 
             $this->booking_id && 
-            $this->client_name && 
+            $this->guest_name && 
             $this->services ){
             return true;
         } else {

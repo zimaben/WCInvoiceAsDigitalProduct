@@ -82,8 +82,10 @@ if ( ! class_exists( 'rbtInvoiceDP' ) ) {
 
             if( \is_admin()){
                 require_once self::get_plugin_path() . 'admin/admin.php';
+                require_once self::get_plugin_path() . 'admin/ajax.php';
             } else {
                 require_once self::get_plugin_path() . 'theme/theme.php';
+                require_once self::get_plugin_path() . 'theme/wc-functions.php';
             }
 
         }
