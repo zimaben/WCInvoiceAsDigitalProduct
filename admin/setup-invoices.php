@@ -28,7 +28,7 @@ function rbt_add_inventory_table($name){
             file_name                       VARCHAR(128),
             amt_paid                        DECIMAL(10,2), 
             payment_method                  VARCHAR(28),
-            record_date                     DATETIME,
+            pickup_date                     DATETIME,
             payment_date                    DATETIME,
             pickup_address                  VARCHAR(128),
             dropoff_address                 VARCHAR(128),

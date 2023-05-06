@@ -69,6 +69,7 @@ Class Record {
             'guest_phone' => $this->record->guest_phone,
             'payment_method' => $this->record->payment_method,
             'filename' => $this->record->file_name,
+            'pickupdate'=> $this->record->pickup_date,
             'services' => $services_array,
         );
         return $args;
@@ -119,7 +120,7 @@ Class Record {
         $inserted = $wpdb->query( $wpdb->prepare(
             "
             INSERT INTO $this->tablename
-            (order_id, guest_name, guest_email, guest_phone, file_name, amt_paid, payment_method, record_date, payment_date, pickup_address, dropoff_address, invoice_status)
+            (order_id, guest_name, guest_email, guest_phone, file_name, amt_paid, payment_method, pickup_date, payment_date, pickup_address, dropoff_address, invoice_status)
             VALUES (%d, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s, %s)
             ",
             0,
@@ -129,7 +130,7 @@ Class Record {
             date("Y-m-d"). '_' . $args['client_email'] . '.pdf',
             0,
             '',
-            date("Y-m-d H:i:s"),
+            $args['pickupdate'],
             $args['pickupdate'],
             $args['pickup_location'],
             $args['dropoff_location'],

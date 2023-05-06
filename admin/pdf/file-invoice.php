@@ -18,17 +18,17 @@
                     <td style="vertical-align:top"><h1>Invoice</h1></td> <td></td> <td style="vertical-align:top"><h2>Bali Daily Drivers</h2></td>
                 </tr>
                 <tr>
-                    <td><h3>Guest Name: <?php echo $this->client_name ?></h3></td>
+                    <td><h3>Guest Name: <?php echo $this->guest_name ?></h3></td>
                     <td></td>
                     <td><h4>E12 Umah D'Jimbaran</h4></td>
                 </tr>
                 <tr>
-                    <td><h3>Guest Email: <?php echo $this->client_email ?></h3></td> 
+                    <td><h3>Guest Email: <?php echo $this->guest_email ?></h3></td> 
                     <td></td> 
                     <td style="vertical-align:top"><h4>Jalan Tm XIV, Jimbaran</h4></td>
                 </tr>
                 <tr>
-                    <td><h3>Guest Phone: <?php echo $this->client_phone ?></h3></td>
+                    <td><h3>Guest Phone: <?php echo $this->guest_phone ?></h3></td>
                     <td></td>
                     <td><h4>Bali, Indonesia</h4></td>
                 </tr>
