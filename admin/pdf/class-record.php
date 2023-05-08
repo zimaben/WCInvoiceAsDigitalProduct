@@ -26,13 +26,7 @@ Class Record {
         $this->first_step_ready = true; 
         return $args;
     }
-    /* UPDATE 
-    order_id,x
-    file_name,
-    payment_method,
-    amt_paid,
-    invoice_status,
-    */
+
     private function isReady(){
         if($this->record->invoice_status === 'incomplete') return false;
         if(

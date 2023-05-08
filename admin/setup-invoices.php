@@ -60,10 +60,13 @@ if( ! $check_tables ){
     }
 }
 if($check_tables){
+    $root = preg_replace( '/wp-content.*$/', '', __DIR__ );
+    if(substr($root, -1) != '/'){
+        $root .= '/';
+    }
+    require_once $root . 'wp-load.php';
     require_once Plugin::get_plugin_path() . 'admin/pdf/class-invoice.php';
     require_once Plugin::get_plugin_path() . 'admin/pdf/class-record.php';
     require_once Plugin::get_plugin_path() . 'admin/pdf/dompdf/autoload.inc.php';
-    $root = preg_replace( '/wp-content.*$/', '', __DIR__ );
-    require_once $root . '/wp-load.php';
 }
 

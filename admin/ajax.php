@@ -71,11 +71,11 @@ class PluginAjax extends Plugin {
 
         $args['baseURL'] = self::get_base_url();
         $manual_close = false;
-        $args['client_name'] = $post['client_name'];
-        $args['client_email'] = $post['client_email'];
-        $args['client_phone'] = $post['client_phone'];
-        $args['pickupdate'] = $post['pickupdate'];
-        $args['communication_preference'] = isset($post['communication_preference']) ? $post['communication_preference'] : 'email';
+        $args['client_name'] = sanitize_text_field($post['client_name']);
+        $args['client_email'] = sanitize_text_field($post['client_email']);
+        $args['client_phone'] = sanitize_text_field($post['client_phone']);
+        $args['pickupdate'] = sanitize_text_field($post['pickupdate']);
+        $args['communication_preference'] = isset($post['communication_preference']) ? (bool) $post['communication_preference'] : 'email';
 
         if(isset($post['is_airport']) && $post['is_airport']) {
             $product = self::map_service('airport-pickup');
@@ -88,9 +88,9 @@ class PluginAjax extends Plugin {
             if($post['from_to'] ){
                 //true is From Airport
                 $args['pickup_location'] = 'Ngurah Rai International Airport';
-                $args['dropoff_location'] = $post['tofrom_airport_address'];
+                $args['dropoff_location'] = sanitize_text_field( $post['tofrom_airport_address']);
             } else {
-                $args['pickup_location'] = $post['tofrom_airport_address'];
+                $args['pickup_location'] = sanitize_text_field($post['tofrom_airport_address']);
                 $args['dropoff_location'] = 'Ngurah Rai International Airport';
             }
         } else {
