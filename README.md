@@ -1,11 +1,10 @@
-# Use Google Calendar as Backend
+# Create a PDF Invoice of a WooCommerce Sale
 
 **Tags:** plugin, DOMPDF 
 **Requires at least:** 6.0  
 **Tested up to:** 6.0  
 **Stable tag:** 1.0.1
 
-Create a PDF Invoice of a WooCommerce Sale
 
 ## Getting Started
 
