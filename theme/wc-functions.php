@@ -13,7 +13,70 @@ class WooFunctions extends Plugin {
         \add_action( 'woocommerce_checkout_update_order_meta', array(get_class(), 'save_invoice_id_to_order' ));
         \add_action('woocommerce_thankyou', array(get_class(), 'after_order'), 10, 1);
     }
+    private static function addGoogleCalendarEvents( $order, $record, $invoice_args ){
+   
+        // Get and Loop Over Order Items
+        $cal = array();
+        $counter = 0;
+        $description = '';
+        foreach ( $order->get_items() as $item_id => $item ) {
+            $product_id = $item->get_product_id();
+            $duration = \carbon_get_post_meta( $product_id, 'service_duration' );
+            if(!$duration ) $duration = \get_post_meta( $productid, '_service_duration', true );
+            if($product_id && $duration){
+                $start_datetime = new \DateTime($invoice_args['pickupdate']);
+                if($counter > 0) $start_datetime->modify('+'.$counter.' day');
+                $cal[] = array(
+                    'eventName' => $item->get_name(),
+                    'start' => $start_datetime->format('Y-m-d H:i:s'),
+                    'duration' => $duration,
+                );
+                $description.= $start_datetime->format('Y-m-d H:i:s') . ' - ' . $item->get_name() . ' - ' . $duration . ' minutes' . "\n";
+            }
+            $counter++;
+        }
 
+        if(!empty($cal)){
+            #Creates calendar event for each item in the order
+            foreach($cal as $event){
+                $free_car = new \rbtgc\admin\CalendarMethod('check_first_availability', array(
+                    'start'=> $event['start'], 
+                    'duration'=> (int) $event['duration']
+                ));
+
+                error_log("free car: " . print_r($free_car, true));
+                if(!$free_car->error){
+                    $id = $free_car->response;
+                    if(!$id) {
+                        #No free car available, figure out this use case
+                        
+                    } else {
+                        $CMEvent = array(
+                            'Name' => $event['eventName'],
+                            'Location' => $record->record->pickup_address,
+                            'UserEmail' => $record->record->guest_email,
+                            'Description' => $description,
+                        );
+                        $add_event = new \rbtgc\admin\CalendarMethod('add_calendar_event', array(
+                            'id'=>$id, 
+                            'start'=> $event['start'], 
+                            'duration'=> (int) $event['duration'], 
+                            'event'=> $CMEvent
+                        ));
+
+                        if($add_event->error){
+                            #Something went wrong
+                            if(Plugin::$debug) error_log( 'rbtInvoiceDP: ' . $add_event->error );
+                        }
+                    }
+                } else {
+                    #Something went wrong with the method call
+                    if(Plugin::$debug) error_log( 'rbtInvoiceDP: ' . $free_car->error );
+                }
+            }
+        }
+    }
+    
     public static function add_invoice_id_to_checkout( $checkout ) {
 
         $invoice_id = isset($_GET['invoice_id']) ? $_GET['invoice_id'] : '';
@@ -43,8 +106,6 @@ class WooFunctions extends Plugin {
                     )
                 );
             }
-            error_log("ORDER");
-            error_log(print_r($order, true));
             #Update Record with Order Info
             $record = new Record($invoice_id);
             $updateOrderID = $record->updateField( 'order_id', $order_id );
@@ -68,17 +129,16 @@ class WooFunctions extends Plugin {
             if(!$invoice_args){
                 #email notify the problem
             }
-            error_log("RECORD");
-            error_log(print_r($record, true));
-            error_log("INVOICE ARGS");
-            error_log(print_r($invoice_args, true));
+            #Check for cross-plugin BookWithGoogleCalendar integration
+            if(class_exists('rbtGoogleCalendar')){
+                self::addGoogleCalendarEvents( $order, $record, $invoice_args );
+            }
+
             $invoice = new Invoice($invoice_args);
-            error_log("INVOICE");
-            error_log(print_r($invoice, true));
             $pdf = $invoice->generatePDF();
 
             // Mark thank you action as done (to avoid repetitions on reload for example)
-            $order->update_meta_data( '_invoice_done', true );
+           # $order->update_meta_data( '_invoice_done', true );
             $order->save();
         }
     }

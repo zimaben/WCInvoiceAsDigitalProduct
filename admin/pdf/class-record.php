@@ -53,7 +53,7 @@ Class Record {
         }
     }
     public function returnInvoiceArgs(){
-        $order = wc_get_order( $this->record->order_id );
+        $order = \wc_get_order( $this->record->order_id );
         $services_array = array();
         foreach ( $order->get_items() as $item_id => $item ) {
             array_push($services_array, array(
