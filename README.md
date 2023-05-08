@@ -12,30 +12,30 @@ git clone git@github.com:zimaben/WCInvoiceAsDigitalProduct.git
 
 ### Required
 
-WooCommerce Installed on a Wordpress site
-Hosting environment 
-From the DOMPDF repository:
+WooCommerce Installed on a Wordpress site  
+From the DOMPDF repository:  
+
 dompdf requires
 
-php: ^7.1 || ^8.0
-ext-dom: *
-ext-mbstring: *
-masterminds/html5: ^2.0
-phenx/php-font-lib: >=0.5.4 <1.0.0
-phenx/php-svg-lib: >=0.3.3 <1.0.0
-requires (dev)
+php: ^7.1 || ^8.0  
+ext-dom: *  
+ext-mbstring: *  
+masterminds/html5: ^2.0  
+phenx/php-font-lib: >=0.5.4 <1.0.0  
+phenx/php-svg-lib: >=0.3.3 <1.0.0  
+requires (dev)  
 
-ext-json: *
-ext-zip: *
-mockery/mockery: ^1.3
-phpunit/phpunit: ^7.5 || ^8 || ^9
-squizlabs/php_codesniffer: ^3.5
-suggests
+ext-json: *  
+ext-zip: *  
+mockery/mockery: ^1.3  
+phpunit/phpunit: ^7.5 || ^8 || ^9  
+squizlabs/php_codesniffer: ^3.5  
 
-ext-gd: Needed to process images
-ext-gmagick: Improves image processing performance
-ext-imagick: Improves image processing performance
-ext-zlib: Needed for pdf stream compression
+suggests:  
+ext-gd: Needed to process images  
+ext-gmagick: Improves image processing performance  
+ext-imagick: Improves image processing performance  
+ext-zlib: Needed for pdf stream compression  
 
 
 
